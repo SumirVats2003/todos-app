@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function LoginForm({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -20,6 +21,7 @@ function LoginForm({ onLogin }) {
 
   return (
     <div className='login-form'>
+      <h2>Existing User Login</h2>
       <input
         type='text'
         placeholder='Username'
@@ -33,6 +35,9 @@ function LoginForm({ onLogin }) {
         onChange={(e) => setPassword(e.target.value)}
       />
       <button onClick={handleLogin}>Login</button>
+      <p>
+        New User? <Link to='/register'>Register</Link>
+      </p>
     </div>
   );
 }

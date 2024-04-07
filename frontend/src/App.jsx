@@ -1,36 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import RegisterForm from "./Pages/RegisterForm";
-import LoginForm from "./Pages/LoginForm";
-import MainApp from "./Pages/MainApp";
-import LogoutButton from "./Components/LogoutButton";
+import Home from "./Pages/Home";
 
 function App() {
-  const [userId, setUserId] = useState(localStorage.getItem("userId"));
-
-  const handleLogin = (userId) => {
-    localStorage.setItem("userId", userId);
-    setUserId(userId);
-  };
-
   return (
-    <div className='container'>
-      {userId == null ? (
-        <div>
-          <h2>Login/Register Forms</h2>
-          <RegisterForm />
-          <LoginForm onLogin={handleLogin} />
-        </div>
-      ) : (
-        <>
-          <header>
-            <span>ToDos List</span>
-            <LogoutButton />
-          </header>
-          <MainApp />
-        </>
-      )}
-    </div>
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path='/' element={<Home />}></Route>
+          <Route exact path='/register' element={<RegisterForm />}></Route>
+        </Routes>
+      </BrowserRouter>
+    </>
   );
 }
 

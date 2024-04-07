@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../App.css";
+import LogoutButton from "../Components/LogoutButton";
 
 function MainApp() {
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
@@ -106,6 +107,10 @@ function MainApp() {
 
   return (
     <>
+      <header>
+        <span>ToDos List</span>
+        <LogoutButton />
+      </header>
       <div className='form-container'>
         <input
           type='text'
