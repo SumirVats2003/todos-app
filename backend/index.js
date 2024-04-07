@@ -57,7 +57,7 @@ app.post("/login", (req, res) => {
 
 app.get("/tasks/:userId", (req, res) => {
   const { userId } = req.params;
-  const query = `SELECT * FROM tasks WHERE user_id = ?`;
+  const query = `SELECT * FROM tasks WHERE user_id = ? ORDER BY due_date`;
   db.query(query, [userId], (err, result) => {
     if (err) {
       console.error("Error fetching tasks:", err);

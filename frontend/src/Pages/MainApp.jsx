@@ -17,20 +17,6 @@ function MainApp() {
     }
   }, []);
 
-  useEffect(() => {
-    if (userId) {
-      fetchTasks(userId);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
-    if (storedUserId) {
-      setUserId(storedUserId);
-      fetchTasks(storedUserId);
-    }
-  }, []);
-
   const fetchTasks = async (userId) => {
     try {
       const response = await axios.get(`http://localhost:3001/tasks/${userId}`);
@@ -139,7 +125,7 @@ function MainApp() {
         </button>
       </div>
       <div className='tasks-buttons'>
-        <button onClick={fetchTasks} className='add-button'>
+        <button onClick={() => fetchTasks(userId)} className='add-button'>
           All Tasks
         </button>
         <button onClick={dueToday} className='add-button'>
