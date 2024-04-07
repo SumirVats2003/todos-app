@@ -1,19 +1,35 @@
 import React, { useState } from "react";
 import "./App.css";
-import LoginForm from "./LoginForm";
-import MainApp from "./MainApp";
+import RegisterForm from "./Pages/RegisterForm";
+import LoginForm from "./Pages/LoginForm";
+import MainApp from "./Pages/MainApp";
+import LogoutButton from "./Components/LogoutButton";
 
 function App() {
-  const [token, setToken] = useState("");
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
 
-  const handleLogin = (token) => {
-    setToken(token);
+  const handleLogin = (userId) => {
+    localStorage.setItem("userId", userId);
+    setUserId(userId);
   };
 
   return (
     <div className='container'>
-      <h1>ToDos List</h1>
-      {!token ? <LoginForm onLogin={handleLogin} /> : <MainApp token={token} />}
+      {userId == null ? (
+        <div>
+          <h2>Login/Register Forms</h2>
+          <RegisterForm />
+          <LoginForm onLogin={handleLogin} />
+        </div>
+      ) : (
+        <>
+          <header>
+            <span>ToDos List</span>
+            <LogoutButton />
+          </header>
+          <MainApp />
+        </>
+      )}
     </div>
   );
 }

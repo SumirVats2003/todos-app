@@ -11,8 +11,8 @@ function LoginForm({ onLogin }) {
         username,
         password,
       });
-      const token = response.data.token;
-      onLogin(token);
+      alert(response.data.message);
+      onLogin(response.data.userId);
     } catch (error) {
       console.error("Login failed:", error);
     }

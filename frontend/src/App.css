@@ -14,11 +14,21 @@ body {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  text-align: center;
+.container header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
 
+.container header span {
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.register-form,
 .login-form,
 .form-container {
   display: flex;
@@ -66,6 +76,7 @@ table td {
   padding: 10px;
   border: 1px solid #ccc;
   text-align: center;
+  width: 33%;
 }
 
 .tasks-table th {
@@ -74,16 +85,12 @@ table td {
 }
 
 .tasks-table td button {
-  background-color: #dc3545;
   color: #fff;
   border: none;
   padding: 5px 10px;
   border-radius: 4px;
   cursor: pointer;
-}
-
-.tasks-table td button:hover {
-  background-color: #c82333;
+  margin: 0 5px;
 }
 
 .form-container {
@@ -141,6 +148,14 @@ table td {
   cursor: pointer;
 }
 
+.tasks-table .edit-button {
+  background-color: #28a745;
+}
+
 .delete-button:hover {
   background-color: #c82333;
+}
+
+.edit-button:hover {
+  background-color: #198754;
 }

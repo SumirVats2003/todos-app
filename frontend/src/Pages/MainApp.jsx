@@ -1,50 +1,84 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "./App.css";
+import "../App.css";
 
 function MainApp() {
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [selectedDueDate, setSelectedDueDate] = useState("");
 
   useEffect(() => {
-    fetchTasks();
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+      fetchTasks(storedUserId);
+    }
   }, []);
 
-  const fetchTasks = async () => {
-    const response = await axios.get("http://localhost:3001/tasks");
-    const formattedTasks = response.data.map((task) => {
-      return {
-        ...task,
-        due_date: new Date(task.due_date).toLocaleDateString("en-GB", {
-          day: "numeric",
-          month: "long",
-          year: "numeric",
-        }),
-      };
-    });
-    setTasks(formattedTasks);
+  useEffect(() => {
+    if (userId) {
+      fetchTasks(userId);
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const storedUserId = localStorage.getItem("userId");
+    if (storedUserId) {
+      setUserId(storedUserId);
+      fetchTasks(storedUserId);
+    }
+  }, []);
+
+  const fetchTasks = async (userId) => {
+    try {
+      const response = await axios.get(`http://localhost:3001/tasks/${userId}`);
+      const formattedTasks = response.data.map((task) => {
+        return {
+          ...task,
+          due_date: new Date(task.due_date).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+          }),
+        };
+      });
+      setTasks(formattedTasks);
+    } catch (error) {
+      console.error("Error fetching tasks:", error);
+    }
   };
 
   const addTask = async () => {
-    await axios.post("http://localhost:3001/tasks", {
-      task_name: newTask,
-      due_date: dueDate,
-    });
-    setNewTask("");
-    setDueDate("");
-    fetchTasks();
+    try {
+      await axios.post("http://localhost:3001/tasks", {
+        task_name: newTask,
+        due_date: dueDate,
+        user_id: userId,
+      });
+      setNewTask("");
+      setDueDate("");
+      fetchTasks(userId);
+    } catch (error) {
+      console.error("Error adding task:", error);
+    }
   };
 
-  const deleteTask = async (taskId) => {
-    await axios.delete(`http://localhost:3001/tasks/${taskId}`);
-    fetchTasks();
+  const deleteTask = async (taskId, userId) => {
+    try {
+      await axios.delete(`http://localhost:3001/tasks/${taskId}/${userId}`);
+      fetchTasks(userId);
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
 
   const dueToday = async () => {
     try {
-      const response = await axios.get("http://localhost:3001/tasks/due-today");
+      const response = await axios.get(
+        `http://localhost:3001/tasks/${userId}/due-today`
+      );
       const formattedTasks = response.data.map((task) => {
         return {
           ...task,
@@ -61,10 +95,12 @@ function MainApp() {
     }
   };
 
+  const editTask = () => {};
+
   const dueOnDate = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:3001/tasks/due-date/${selectedDueDate}`
+        `http://localhost:3001/tasks/${userId}/due-date/${selectedDueDate}`
       );
       const formattedTasks = response.data.map((task) => {
         return {
@@ -135,8 +171,11 @@ function MainApp() {
               <td>{task.task_name}</td>
               <td>{task.due_date}</td>
               <td>
+                <button onClick={editTask} className='edit-button'>
+                  Edit
+                </button>
                 <button
-                  onClick={() => deleteTask(task.task_id)}
+                  onClick={() => deleteTask(task.task_id, task.user_id)}
                   className='delete-button'
                 >
                   Delete
