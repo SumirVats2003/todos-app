@@ -53,7 +53,7 @@ function MainApp() {
 
   const deleteTask = async (taskId, userId) => {
     try {
-      await axios.delete(`http://localhost:3001/tasks/${taskId}/${userId}`);
+      await axios.delete(`http://localhost:3001/tasks/${userId}/${taskId}`);
       fetchTasks(userId);
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -153,7 +153,7 @@ function MainApp() {
         </thead>
         <tbody>
           {tasks.map((task) => (
-            <tr key={task.task_id}>
+            <tr key={task.id}>
               <td>{task.task_name}</td>
               <td>{task.due_date}</td>
               <td>
@@ -161,7 +161,7 @@ function MainApp() {
                   Edit
                 </button>
                 <button
-                  onClick={() => deleteTask(task.task_id, task.user_id)}
+                  onClick={() => deleteTask(task.id, task.user_id)}
                   className='delete-button'
                 >
                   Delete

@@ -102,7 +102,7 @@ app.get("/tasks/:userId/due-date/:date", (req, res) => {
 
 app.delete("/tasks/:userId/:taskId", (req, res) => {
   const { userId, taskId } = req.params;
-  const query = `DELETE FROM tasks WHERE task_id = ? AND user_id = ?`;
+  const query = `DELETE FROM tasks WHERE id = ? AND user_id = ?`;
   db.query(query, [taskId, userId], (err, result) => {
     if (err) {
       console.error("Error deleting task:", err);
