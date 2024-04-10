@@ -10,6 +10,9 @@ function MainApp() {
   const [dueDate, setDueDate] = useState("");
   const [selectedDueDate, setSelectedDueDate] = useState("");
   const [value, setValue] = useState("");
+  const [newEditingTask, setNewEditingTask] = useState("");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [newDueDate, setNewDueDate] = useState("");
 
   useEffect(() => {
     const storedUserId = localStorage.getItem("userId");
@@ -40,7 +43,7 @@ function MainApp() {
 
   const addTask = async () => {
     try {
-      if (newTask == "" || dueDate == "") {
+      if (newTask === "" || dueDate === "") {
         alert("Empty Title or Date");
       } else {
         await axios.post("http://localhost:3001/tasks", {
@@ -88,7 +91,36 @@ function MainApp() {
     }
   };
 
-  const editTask = () => {};
+  const editTask = (taskId) => {
+    setEditingTaskId(taskId);
+  };
+
+  const saveEditedTaskName = async (userId, taskId, newTaskName) => {
+    try {
+      await axios.put(`http://localhost:3001/tasks/${userId}/${taskId}`, {
+        task_name: newTaskName,
+      });
+      setEditingTaskId(null);
+      fetchTasks(userId);
+    } catch (error) {
+      console.error("Error editing task:", error);
+    }
+  };
+
+  const saveEditedTaskDate = async (userId, taskId, newDueDate) => {
+    try {
+      await axios.put(
+        `http://localhost:3001/tasks/${userId}/${taskId}/due-date`,
+        {
+          due_date: newDueDate,
+        }
+      );
+      setEditingTaskId(null);
+      fetchTasks(userId);
+    } catch (error) {
+      console.error("Error editing task due date:", error);
+    }
+  };
 
   const dueOnDate = async () => {
     try {
@@ -113,7 +145,7 @@ function MainApp() {
   };
 
   const search = async (userId, value) => {
-    if (value == "") {
+    if (value === "") {
       alert("Empty Search Query");
     } else {
       try {
@@ -173,7 +205,7 @@ function MainApp() {
         </button>
       </div>
 
-      {tasks.length == 0 ? (
+      {tasks.length === 0 ? (
         <h2>No Task Due</h2>
       ) : (
         <>
@@ -207,18 +239,64 @@ function MainApp() {
             <tbody>
               {tasks.map((task) => (
                 <tr key={task.id}>
-                  <td>{task.task_name}</td>
-                  <td>{task.due_date}</td>
                   <td>
-                    <button onClick={editTask} className='edit-button'>
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => deleteTask(task.id, task.user_id)}
-                      className='delete-button'
-                    >
-                      Delete
-                    </button>
+                    {editingTaskId === task.id ? (
+                      <input
+                        type='text'
+                        value={newEditingTask}
+                        onChange={(e) => setNewEditingTask(e.target.value)}
+                      />
+                    ) : (
+                      task.task_name
+                    )}
+                  </td>
+                  <td>
+                    {editingTaskId === task.id ? (
+                      <input
+                        type='date'
+                        value={newDueDate}
+                        onChange={(e) => setNewDueDate(e.target.value)}
+                      />
+                    ) : (
+                      task.due_date
+                    )}
+                  </td>
+                  <td>
+                    {editingTaskId === task.id ? (
+                      <>
+                        <button
+                          onClick={() =>
+                            saveEditedTaskName(userId, task.id, newEditingTask)
+                          }
+                          className='edit-button'
+                        >
+                          Save Name
+                        </button>
+                        <button
+                          onClick={() =>
+                            saveEditedTaskDate(userId, task.id, newDueDate)
+                          }
+                          className='edit-button'
+                        >
+                          Save Date
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          onClick={() => editTask(task.id)}
+                          className='edit-button'
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteTask(task.id, task.user_id)}
+                          className='delete-button'
+                        >
+                          Delete
+                        </button>
+                      </>
+                    )}
                   </td>
                 </tr>
               ))}

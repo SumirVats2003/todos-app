@@ -126,6 +126,36 @@ app.get("/tasks/:userId/:value", (req, res) => {
   });
 });
 
+app.put("/tasks/:userId/:taskId", (req, res) => {
+  const { userId, taskId } = req.params;
+  const { task_name } = req.body;
+  const query = `UPDATE tasks SET task_name = ? WHERE user_id = ? AND id = ?`;
+  db.query(query, [task_name, userId, taskId], (err, result) => {
+    if (err) {
+      console.error("Error updating task:", err);
+      res.status(500).json({ error: "An error occurred while updating task" });
+    } else {
+      res.status(200).json({ message: "Task updated successfully" });
+    }
+  });
+});
+
+app.put("/tasks/:userId/:taskId/due-date", (req, res) => {
+  const { userId, taskId } = req.params;
+  const { due_date } = req.body;
+  const query = `UPDATE tasks SET due_date = ? WHERE user_id = ? AND id = ?`;
+  db.query(query, [due_date, userId, taskId], (err, result) => {
+    if (err) {
+      console.error("Error updating task due date:", err);
+      res
+        .status(500)
+        .json({ error: "An error occurred while updating task due date" });
+    } else {
+      res.status(200).json({ message: "Task due date updated successfully" });
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
