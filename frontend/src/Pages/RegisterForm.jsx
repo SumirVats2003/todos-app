@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 function RegisterForm({ onRegister }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleRegister = async () => {
     try {
@@ -12,15 +13,27 @@ function RegisterForm({ onRegister }) {
         username,
         password,
       });
-      alert(response.data.message);
+      if (response.status === 200) {
+        setIsSuccess(true);
+      }
       onRegister();
+      setUsername("");
+      setPassword("");
     } catch (error) {
-      console.error("Registration failed:", error);
+      alert("Registration failed");
     }
   };
 
   return (
     <div className='container'>
+      <span
+        className='success'
+        style={{
+          display: isSuccess ? "block" : "none",
+        }}
+      >
+        User Registered Successfully
+      </span>
       <div className='register-form'>
         <h2>New User Registeration</h2>
         <input

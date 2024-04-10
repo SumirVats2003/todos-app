@@ -12,10 +12,11 @@ function LoginForm({ onLogin }) {
         username,
         password,
       });
-      alert(response.data.message);
       onLogin(response.data.userId);
+      setUsername("");
+      setPassword("");
     } catch (error) {
-      console.error("Login failed:", error);
+      alert("Login failed");
     }
   };
 

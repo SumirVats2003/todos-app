@@ -113,6 +113,19 @@ app.delete("/tasks/:userId/:taskId", (req, res) => {
   });
 });
 
+app.get("/tasks/:userId/:value", (req, res) => {
+  const { userId, value } = req.params;
+  const query = `SELECT * FROM tasks WHERE user_id = ? AND task_name LIKE CONCAT('%', ?, '%') ORDER BY due_date;`;
+  db.query(query, [userId, value], (err, result) => {
+    if (err) {
+      console.error("Error fetching tasks:", err);
+      res.status(500).json({ error: "An error occurred while fetching tasks" });
+    } else {
+      res.status(200).json(result);
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

@@ -14,7 +14,11 @@ function LogoutButton() {
     location.reload();
   };
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return (
+    <button onClick={handleLogout} className='logout-button'>
+      Logout
+    </button>
+  );
 }
 
 export default LogoutButton;
